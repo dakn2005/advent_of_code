@@ -7,20 +7,54 @@ class Solution:
                 
     def txt_to_array(self):
         lines=[]
-        with open('input.txt') as f:
+
+        with open('2023/day1/input.txt') as f:
             lines = f.readlines()
         
         return lines
     def calibration(self, strArr: Optional[list] = None):
         if self.isextfile:
-            strArr = self.txt_to_array() 
+            strArr = self.txt_to_array()
+
+        words_to_numbers = {
+            'one': '1',
+            'two': '2',
+            'three': '3',
+            'four': '4',
+            'five': '5',
+            'six': '6',
+            'seven': '7',
+            'eight': '8',
+            'nine': '9',
+            'zero': 'k'
+        } 
         
-        strArr = self.naive_letterN_to_number(strArr)
+        # strArr = self.naive_letterN_to_number(strArr)
 
         total=0
-        for lot in strArr:
-            nums = [int(s) for s in lot if str(s).isnumeric()]
-            total += int(f'{nums[0]}{nums[-1]}')
+        for line in strArr:
+            lot = str(line).lower().replace(' ','').replace('\n', '')
+
+            nums = [0] * len(lot)
+
+            for n in words_to_numbers:
+                if n in lot:
+                    matcharr = [m.start() for m in re.finditer(n, lot)]
+                    for idx in matcharr:
+                        nums[idx] = words_to_numbers[n]
+            
+            for i,c in enumerate(lot):
+                if str(c).isnumeric():
+                    nums[i] = 'k' if c == '0' else int(c)
+
+            outter=[]
+            for m in nums:
+                if m != 0:
+                    outter.append(0 if m=='k' else m)
+
+            print(f'{lot}: {outter}: {outter[0]}{outter[-1]}')
+
+            total += int(f'{outter[0]}{outter[-1]}')
 
         return total
     
@@ -64,13 +98,16 @@ inputStr_part1 = [
 ]
 
 inputStr_part2 = [
-'two1nine',
-'eightwothree',
-'abcone2threexyz',
-'xtwone3four',
-'4nineeightseven2',
-'zoneight234',
-'7pqrstsixteen'
+# 'two1nine',
+# 'eightwothree',
+# 'abcone2threexyz',
+# 'xtwone3four',
+# '4nineeightseven2',
+# 'zoneight234',
+# '7pqrstsixteen',
+# 'Zerosaadadda2340dd',
+# 'addads12zeroas',
+'a0iwrwe'
 ]
 
 t = Solution(True)
