@@ -26,7 +26,7 @@ class Solution:
             'seven': '7',
             'eight': '8',
             'nine': '9',
-            'zero': 'k'
+            # 'zero': 'k'
         } 
         
         # strArr = self.naive_letterN_to_number(strArr)
@@ -41,7 +41,7 @@ class Solution:
                 if n in lot:
                     matcharr = [m.start() for m in re.finditer(n, lot)]
                     for idx in matcharr:
-                        nums[idx] = words_to_numbers[n]
+                        nums[idx] = int(words_to_numbers[n])
             
             for i,c in enumerate(lot):
                 if str(c).isnumeric():
@@ -98,16 +98,16 @@ inputStr_part1 = [
 ]
 
 inputStr_part2 = [
-# 'two1nine',
-# 'eightwothree',
-# 'abcone2threexyz',
-# 'xtwone3four',
-# '4nineeightseven2',
-# 'zoneight234',
-# '7pqrstsixteen',
+'two1nine',
+'eightwothree',
+'abcone2threexyz',
+'xtwone3four',
+'4nineeightseven2',
+'zoneight234',
+'7pqrstsixteen',
 # 'Zerosaadadda2340dd',
 # 'addads12zeroas',
-'a0iwrwe'
+# 'a0iwrwe'
 ]
 
 t = Solution(True)
