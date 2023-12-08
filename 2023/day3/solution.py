@@ -16,12 +16,12 @@ class Solution:
 
         for i, line  in enumerate(lines):
             strarr = list(line)
-            temp1, theN = [], []
+            temparr, theN = [], []
             idx=0
             while idx <= len(strarr):
                 if idx == len(strarr):
                     if len(theN) > 0:
-                        temp1.append(''.join(theN))
+                        temparr.append(''.join(theN))
                         theN.clear()
                     
                     break
@@ -29,24 +29,24 @@ class Solution:
                 c = strarr[idx]
 
                 if str(c).isdigit():
-                    theN.append(c)
+                    theN.append(c.strip())
                 else:
                     if len(theN) > 0:
-                        temp1.append(''.join(theN))
+                        temparr.append(''.join(theN))
                         theN.clear()
-                    temp1.append(c)
+                    temparr.append(c)
 
                 idx+=1
 
             # temp1 = str(line).split('.')
             meta[i] = []
 
-            for c in temp1:
+            for j,c in enumerate(temparr):
                 if str(c).isdigit():
-                    match = re.search(c, line)
+                    dl = len(c)+1
                     meta[i].append({
                         'digit': c,
-                        'span': match.span()
+                        'span': (j, j+dl)
                     })
 
             out.append(list(line))
@@ -87,14 +87,15 @@ class Solution:
 
             # return visited
         
-        def getNums(tuples, meta):
+        def getNums():
             out=[]
             spanSet = set()
-            for (r,c) in tuples:
+            for (r,c) in visited:
+                if r < 0: continue
                 tarr = meta[r]
                 for obj in tarr:
                     spanStart,spanEnd = obj['span']
-                    if (r, spanStart,spanEnd) not in spanSet and c in range(spanStart,spanEnd):
+                    if (r, spanStart,spanEnd) not in spanSet and c in range(spanStart, spanEnd):
                         out.append(obj['digit'])
                         spanSet.add((r, spanStart,spanEnd))
 
@@ -105,16 +106,15 @@ class Solution:
                 if not char == '.' and not char.isdigit():
                    dfs(i,j)
         
-        pNums = [int(n) for n in getNums(visited, meta)]
-        pNums.sort()
+        visited = list(sorted(visited))
+        pNums = [int(n) for n in getNums()]
+        # pNums.sort()
         return sum(pNums)
                    
-
 
 test1 = [
     '467..114..',
     '...*......',
-    # '..467..114',
     '..35..633.',
     '......#...',
     '617*......',
@@ -125,44 +125,47 @@ test1 = [
     '.664.598..',
 ]
 
-test2 = [
-    '467..114..',
-    '...*......',
-    '..467..114',
-    '..35..633.',
-    '......#...',
-    '617*......',
-    '.....+.58.',
-    '..592.....',
-    '......755.',
-    '...$.*....',
-    '.664.598..',
+test15=[
+    '..1',
+    '1.+',
 ]
 
-test3 = [
-    '467..114..',
-    '...&......',
-    '..35...633',
-    '......#...',
-    '#617%.....',
-    '...../.58',
-    '..592.....',
-    '......755.',
-    '..........',
-    '664$...598$',
-    '..........',
-    '79/88..250'
+# https://www.reddit.com/r/adventofcode/comments/189q9wv/2023_day_3_another_sample_grid_to_use/
+
+test16=[
+    '12.......*..',
+    '+.........34',
+    '.......-12..',
+    '..78........',
+    '..*....60...',
+    '78..........',
+    '.......23...',
+    '....90*12...',
+    '............',
+    '2.2......12.',
+    '.*.........*',
+    '1.1.......56',
 ]
 
-test4 = [
-'48.................501....33.....622..............763.........331.................161.683......................................980..........', 
-'......91..............720..*........$985......976......................834...........461.........*...........................266....#...*...',
-'68....................*....45..............&...........79*888.250*461.*.......%................574..........3*....408..380........383.192...',
-'...........836......383...........557.....672..........................764.....944............................827...........................',
+test17=[
+    '12.......*..',
+    '+.........34',
+    '.......-12..',
+    '..78........',
+    '..*....60...',
+    '78.........9',
+    '.5.....23..$',
+    '8...90*12...',
+    '............',
+    '2.2......12.',
+    '.*.........*',
+    '1.1..503+.56',
 ]
 
-t = Solution(False)
+
+
+t = Solution(True)
 print(t.schematic(test1))
-# print(t.schematic(test2))
-print(t.schematic(test3))
-# print(t.schematic(test4))
+print(t.schematic(test15)) #edge case here
+print(t.schematic(test16)) #edge case here
+print(t.schematic(test17)) #edge case here
