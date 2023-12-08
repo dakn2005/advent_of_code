@@ -58,6 +58,7 @@ class Solution:
 
         return total
     
+    #  TODO: deprecated
     def naive_letterN_to_number(self, arr):
         # naive/bruteforce solution
         words_to_numbers = {
