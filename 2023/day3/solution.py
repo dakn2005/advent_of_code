@@ -1,14 +1,24 @@
 import re
 import sys         
 
-sys.path.append('2023/')
+# sys.path.append('2023/')
 
-import fileData
+# import fileData
 
 class Solution:
     def __init__(self, extf = False):
         self.extf = extf
         self.symbols = set()
+
+    def getLines(self):
+        lines = []
+
+        with open('2023/day3/input.txt') as f:
+            lines = f.readlines()
+        
+        lines = [str(l).replace('\n', '') for l in lines]
+
+        return lines
 
     def getLineData(self, lines):
         out=[]
@@ -18,6 +28,7 @@ class Solution:
             strarr = list(line)
             temparr, theN = [], []
             idx=0
+
             while idx <= len(strarr):
                 if idx == len(strarr):
                     if len(theN) > 0:
@@ -41,13 +52,17 @@ class Solution:
             # temp1 = str(line).split('.')
             meta[i] = []
 
-            for j,c in enumerate(temparr):
+            cnter=0
+            while cnter < len(temparr):
+                c = temparr[cnter]
                 if str(c).isdigit():
-                    dl = len(c)+1
+                    dl = len(c)
                     meta[i].append({
                         'digit': c,
-                        'span': (j, j+dl)
+                        'span': (cnter, cnter+dl)
                     })
+                    cnter+=dl
+                cnter+=1
 
             out.append(list(line))
             
@@ -60,7 +75,7 @@ class Solution:
 
     def schematic(self, arr):
         if self.extf:
-            arr = fileData.getLines('day3')
+            arr = self.getLines()
 
         lines, meta = self.getLineData(arr)
         visited = set()
@@ -95,7 +110,7 @@ class Solution:
                 tarr = meta[r]
                 for obj in tarr:
                     spanStart,spanEnd = obj['span']
-                    if (r, spanStart,spanEnd) not in spanSet and c in range(spanStart, spanEnd):
+                    if (r, spanStart,spanEnd) not in spanSet and spanStart <= c <= spanEnd:
                         out.append(obj['digit'])
                         spanSet.add((r, spanStart,spanEnd))
 
@@ -162,10 +177,64 @@ test17=[
     '1.1..503+.56',
 ]
 
+test18 = [
+    '*...........',
+    '.123.45.....',
+    '.........678',
+    '*...*....732',
+    '.901.13.....',
+    '.........475'
+]
+
+test19=[
+    '.20000.',
+    '.*.',
+    '585',
+]
+
+test20=[
+    '.....',
+    '1.7..',
+    '..*..'
+]
+
+test21=[
+    '12.......*..',
+    '+.........34',
+    '.......-12..',
+    '..78........',
+    '..*....60...',
+    '78.........9',
+    '15.....23..$',
+    '8...90*12...',
+    '............',
+    '2.2......12.',
+    '.*.........*',
+    '1.1..503+.56',
+]
+
+test22=[
+    '....................',
+    '..-52..52-..52..52..',
+    '..................-.',
+]
+
+test23 = [
+    '........',
+    '.24..4..',
+    '......*.',
+]
 
 
-t = Solution(True)
-print(t.schematic(test1))
-print(t.schematic(test15)) #edge case here
-print(t.schematic(test16)) #edge case here
-print(t.schematic(test17)) #edge case here
+
+t = Solution(False)
+# print(t.schematic(test1))
+# print(t.schematic(test15)) #edge case here
+# print(t.schematic(test16)) #edge case here
+# print(t.schematic(test17)) #edge case here
+# print(t.schematic(test18)) #edge case here
+# print(t.schematic(test19)) #edge case here
+# print(t.schematic(test20)) #edge case here
+# print(t.schematic(test21)) #edge case here
+print(t.schematic(test22)) #edge case here
+# print(t.schematic(test23)) #edge case here
