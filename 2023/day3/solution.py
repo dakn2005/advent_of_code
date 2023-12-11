@@ -2,9 +2,9 @@ import re
 import sys         
 import numpy as np
 
-# sys.path.append('2023/')
+sys.path.append('2023/')
 
-# import fileData
+import fileData
 
 class Solution:
     def __init__(self, extf = False):
