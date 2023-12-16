@@ -301,8 +301,11 @@ test23 = [
     '......*.',
 ]
 
+import time
+start = time.time()
 t = Solution(True)
-print(t.schematic(test1))
+schema = t.schematic(test1)
+print('time: {:.2f}s'.format((time.time() - start)), schema)
 # print(t.schematic(test15)) #edge case here
 # print(t.schematic(test16)) #edge case here
 # print(t.schematic(test17)) #edge case here

@@ -4,6 +4,9 @@ sys.path.append('2023/')
 
 import fileData
 
+# TODO: read on more solutions
+# https://www.reddit.com/r/adventofcode/comments/18actmy/2023_day_4_solutions/
+# https://www.reddit.com/r/adventofcode/comments/18agbog/2023_day_4_part_2_anyone_else_felt_the_same/
 class Solution:
     def __init__(self, extfile=False):
         self.extfile = extfile
@@ -28,7 +31,7 @@ class Solution:
         pt = 0 if matchesCnt == 0 else 2**(matchesCnt - 1)
         return cardname, pt
     
-    def calcPoints(self, lines):
+    def calculatePoints(self, lines):
         if self.extfile:
             lines = fileData.getLines('day4')
         cp = []
@@ -90,8 +93,11 @@ cardsTest = [
 
 # deck, total = t.calcPoints(cardsTest)
 # print(deck, total)
+import time
+start = time.time()
+# time.sleep
 cards = t.scratchCards(cardsTest)
-print(cards)
+print('time: {0:.2f}s:'.format(time.time() - start), cards)
 
 
 
