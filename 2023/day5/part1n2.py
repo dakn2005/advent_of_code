@@ -8,7 +8,7 @@ import time
 # TODO: solution very inefficient for large numbers generated as per the input; full refactor required
 class Solution:
     def __init__(self, prod = None):
-        self.seedList = []
+        self.seedsList = []
         self.prod = prod
 
     def getSeedList(self, txt):
@@ -49,20 +49,14 @@ class Solution:
 
         return out
     
-    def lowestLocale(self):
-        start = time.time()
-        lines = fileData.getLines('day5') if self.prod else fileData.getLines('day5/test')
-        seedTxt = lines.pop(0)
-        self.seedList  = self.getSeedList(seedTxt)
-        
-        seedRange = [] #part II
+    def lowestLocale(self, outlines, seedList): 
+        rng = range(seedList[0], seedList[0]+seedList[1])
+        seedRange = set(list(rng))
         seedMapped = {}
-        for i, item in enumerate(self.seedList):
-            # if i+1 % 2 == 0:
-            #     prevIdx = 0 if i == 0 else i-1
-            #     rng = range(self.seedList[prevIdx], item)
-            seedMapped[item] = {}
-
+        lines = outlines.copy()
+        for sl in seedRange:
+            seedMapped[sl] = {}
+        
         categories = [
             'seed-to-soil',
             'soil-to-fertilizer',
@@ -75,8 +69,10 @@ class Solution:
 
         # idx = 0
 
-        locations = []
-        # *Refactored 
+        # locations = []
+        location = None
+        ts = time.time()
+
         while len(lines) > 0:
             line = lines.pop(0)
             line = str(line).replace('map:', '').strip()
@@ -91,7 +87,7 @@ class Solution:
                     categoryLines.append(innerline)
                 
                 categoryResults = {}
-                for item in self.seedList:
+                for item in list(seedRange): #self.seedsList:
                     # tempstart = time.time()
                     seedMapped[item][line] = []
                     cIdx = categories.index(line)
@@ -102,45 +98,38 @@ class Solution:
                     # print('{:.6f}s'.format(time.time() - tempstart))
 
                     if line == categories[6]:
-                        locations.append(categoryResults[line][1])     
+                        # locations.append(categoryResults[line][1]) 
+                        location = min(categoryResults[line][1], location) if location is not None else categoryResults[line][1]    
 
-        # TODO: refactor below code
-        # while len(lines) > 0:
-        #     line = lines.pop(0)
-        #     line = str(line).replace('map:', '').strip()
-        #     if line in categories:
-        #         categoryLines=[]
-        #         while len(lines) > 0:
-        #             innerline = lines.pop(0)
-        #             if innerline == '':
-        #                 break
+        # print('No! {:.6f}s'.format(time.time() - ts))
+        
+        return location, None #, locations
+    
+    def calcLowestlocale(self):
+        start = time.time()
+        lines = fileData.getLines('day5') if self.prod else fileData.getLines('day5/test')
+        seedTxt = lines.pop(0)
+        seedList  = self.getSeedList(seedTxt)
 
-        #             categoryLines.append(innerline)
-               
-        #         categoryResults[line] = self.dest_source_mapper_full(categoryLines)
-        #     # else:
-        #     #     lines.pop(idx)
-        #     # idx += 1
-
-        # # return self.seedList, categoryResults
         # locations = []
-        # for seed in self.seedList:
-        #     seed = int(seed)
-        #     soil = categoryResults[categories[0]][seed] if seed in categoryResults[categories[0]] else seed
-        #     fertilizer = categoryResults[categories[1]][soil] if soil in categoryResults[categories[1]] else soil
-        #     water = categoryResults[categories[2]][fertilizer] if fertilizer in categoryResults[categories[2]] else fertilizer
-        #     light = categoryResults[categories[3]][water] if water in categoryResults[categories[3]] else water
-        #     temp = categoryResults[categories[4]][light] if light in categoryResults[categories[4]] else light
-        #     humidity = categoryResults[categories[5]][temp] if temp in categoryResults[categories[5]] else temp
-        #     location = categoryResults[categories[6]][humidity] if humidity in categoryResults[categories[6]] else humidity
+        locale = None
+        while len(seedList) > 0:
+            sl1 = seedList.pop(0)
+            sl2 = seedList.pop(0)
+            temptime = time.time()
+            lols = self.lowestLocale(lines, [sl1, sl2])
+            # lols.sort()
+            # locations.extend(lols)
+            locale = min(locale, lols[0]) if locale is not None else lols[0]
 
-        #     locations.append(location)
+            # print('inner {:.6f}s'.format(time.time() - temptime))
 
-        return '{:.6f}s'.format(time.time() - start), min(locations)
+        # locations.sort()
+        return '{:.6f}s'.format(time.time() - start), locale
 
     
-t = Solution(True)
-print(t.lowestLocale())
+t = Solution()
+print(t.calcLowestlocale())
 
 
 
