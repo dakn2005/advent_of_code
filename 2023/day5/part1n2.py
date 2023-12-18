@@ -5,7 +5,7 @@ sys.path.append('2023/')
 import fileData
 import time
 
-# TODO: solution very inefficient for large numbers generated as per the input; full refactor required
+# TODO: Part II solution very inefficient for large numbers generated as per the input; full refactor required
 class Solution:
     def __init__(self, prod = None):
         self.seedsList = []
@@ -115,9 +115,9 @@ class Solution:
         locale = None
         while len(seedList) > 0:
             sl1 = seedList.pop(0)
-            sl2 = seedList.pop(0)
+            # sl2 = seedList.pop(0)
             temptime = time.time()
-            lols = self.lowestLocale(lines, [sl1, sl2])
+            lols = self.lowestLocale(lines, [sl1, 1]) #sl2
             # lols.sort()
             # locations.extend(lols)
             locale = min(locale, lols[0]) if locale is not None else lols[0]

@@ -1,125 +1,97 @@
+# https://www.youtube.com/watch?v=_RpZrD3CaDc
+
 import sys         
 
 sys.path.append('2023/')
 
 import fileData
 import time
+# TODO: solution very inefficient for large numbers generated as per the input; full refactor required
+import re
 
-# TODO: should be more memory efficient, buuuut takes more time than part1n2
-class Solution:
-    def __init__(self, prod = None):
-        self.seedsList = []
-        self.prod = prod
+prod = None
+# with open("day_05.in") as fin:
+lines = fileData.getLines('day5') if prod else fileData.getLines('day5/test') #fin.read().strip().split("\n")
 
-    def getSeedList(self, txt):
-        _, values = txt.split(':')
-        return [int(v) for v in values.split(' ') if v != '']
+raw_seeds = list(map(int, lines[0].split(" ")[1:]))
+seeds = [
+    (raw_seeds[i], raw_seeds[i+1])
+    for i in range(0, len(raw_seeds), 2)
+]
 
-    def dest_source_mapper(self, txtList, seedVal):
-        out= [seedVal, seedVal]
+# Generate all the mappings
+maps = []
 
-        for tl in txtList:
-            destV, sourceV, stepper = [int(n) for n in str(tl).split(' ') if n != '']
+i = 2
+while i < len(lines):
+    catA, _, catB = lines[i].split(" ")[0].split("-")
+    maps.append([])
 
-            if sourceV <= seedVal < sourceV+stepper:
-                # sourceIdx = list(range(sourceV, sourceV+stepper)).index(seedVal)
-                # destArr = list(range(destV, destV+stepper))
-                # out[1] = destArr[sourceIdx]
-                sourceIdx = seedVal - sourceV
-                out[1] = destV + sourceIdx
+    i += 1
+    while i < len(lines) and not lines[i] == "":
+        dstStart, srcStart, rangeLen = map(int, lines[i].split())
+        maps[-1].append((dstStart, srcStart, rangeLen))
+        i += 1
 
-        return out
-    # *should be more memory efficient
-    def lowestLocale(self, outlines, seedPair): 
-        location = None
-        # locations =[]
-        seedMapped: dict = {}
-        cnt= 0 
-        ts = time.time()
+    maps[-1].sort(key=lambda x: x[1])
 
-        while cnt < seedPair[1]:
-            lines = outlines.copy()
-            seed = seedPair[0]+cnt
-            seedMapped[seed] = {}
-            cnt+=1
-        
-            categories = [
-                'seed-to-soil',
-                'soil-to-fertilizer',
-                'fertilizer-to-water',
-                'water-to-light',
-                'light-to-temperature',
-                'temperature-to-humidity',
-                'humidity-to-location',
-            ]
+    i += 1
 
-            ts = time.time()
 
-            while len(lines) > 0:
-                line = lines.pop(0)
-                line = str(line).replace('map:', '').strip()
+# Ensure that all mappings are disjoint
+for m in maps:
+    for i in range(len(m)-1):
+        if not m[i][1] + m[i][2] <= m[i+1][1]:
+            print(m[i], m[i+1])
 
-                if line in categories:
-                    categoryLines=[]
 
-                    while len(lines) > 0:
-                        innerline = lines.pop(0)
-                        if innerline == '':
-                            break
+def remap(lo, hi, m) -> tuple: 
+    # Remap an interval (lo,hi) to a set of intervals m
+    ans = []
+    for dst, src, R in m:
+        end = src + R - 1
+        D = dst - src  # How much is this range shifted
 
-                        categoryLines.append(innerline)
-                    
-                    categoryResults = {}
-                   
-                    seedMapped[seed][line] = []
-                    cIdx = categories.index(line)
+        if not (end < lo or src > hi):
+            ans.append((max(src, lo), min(end, hi), D))
 
-                    if cIdx  == 0:
-                        seedVal = seed  
-                    else: 
-                        seedVal = seedMapped[seed][categories[cIdx-1]][1]
-                        # del seedMapped[seed][categories[cIdx-1]]
+    for i, interval in enumerate(ans):
+        l, r, D = interval
+        yield (l + D, r + D)
 
-                    categoryResults[line] = self.dest_source_mapper(categoryLines, seedVal)
-                    # print('{:.6f}s'.format(time.time() - tempstart))
-                    seedMapped[seed][line] = categoryResults[line]
-                    # print('{:.6f}s'.format(time.time() - tempstart))
+        if i < len(ans) - 1 and ans[i+1][0] > r + 1:
+            yield (r + 1, ans[i+1][0] - 1)
 
-                    if line == categories[6]:
-                        # locations.append(categoryResults[line][1])     
-                        location = min(categoryResults[line][1], location) if location is not None else categoryResults[line][1]
-        
-        # print('time: {:.6f}s'.format(time.time() - ts))
-        
-        return location, None #, locations
+    # End and start ranges can use some love
+    if len(ans) == 0:
+        yield (lo, hi)
+        return
+
+    if ans[0][0] != lo:
+        yield (lo, ans[0][0] - 1)
+    if ans[-1][1] != hi:
+        yield (ans[-1][1] + 1, hi)
+
+
+locs = []
+
+ans = 1 << 60
+
+for start, R in seeds:
+    cur_intervals = [(start, start + R - 1)]
+    new_intervals = []
+
+    for m in maps:
+        for lo, hi in cur_intervals:
+            for new_interval in remap(lo, hi, m):
+                new_intervals.append(new_interval)
+
+        cur_intervals, new_intervals = new_intervals, []
+
+    for lo, hi in cur_intervals:
+        ans = min(ans, lo)
+
+
+print(ans)
     
-    def calcLowestlocale(self):
-        start = time.time()
-        lines = fileData.getLines('day5') if self.prod else fileData.getLines('day5/test')
-        seedTxt = lines.pop(0)
-        seedList  = self.getSeedList(seedTxt)
-
-        # locations = []
-        locale = None
-        while len(seedList) > 0:
-            sl1 = seedList.pop(0)
-            sl2 = seedList.pop(0)
-            temptime = time.time()
-            res = self.lowestLocale(lines, [sl1, sl2])
-            # res[1].sort()
-            # locations.extend(res[1])
-            locale = min(locale, res[0]) if locale is not None else res[0]
-            print('inner {:.6f}s'.format(time.time() - temptime))
-
-        # locations.sort()
-        return '{:.6f}s'.format(time.time() - start), locale
-
     
-t = Solution()
-print(t.calcLowestlocale())
-
-
-
-
-
-

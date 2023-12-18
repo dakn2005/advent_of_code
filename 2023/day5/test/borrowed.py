@@ -1,70 +1,100 @@
-from typing import List
-import time
+# https://www.youtube.com/watch?v=_RpZrD3CaDc
+# https://github.com/womogenes/AoC-2023-Solutions/blob/main/day_05/day_05_p2.py
+# !Note on checking for disjoint sets
 
 import sys         
+
 sys.path.append('2023/')
+
 import fileData
+import time
 import re
 
 prod = False
+# with open("day_05.in") as fin:
+lines = fileData.getLines('day5') if prod else fileData.getLines('day5/test') #fin.read().strip().split("\n")
 
-def part1():
-    segments = fileData.getLines('day5') if prod else fileData.getLines('day5/test') #puzzle_input.split('\n\n')
-    seeds = re.findall(r'\d+', segments[0])
+raw_seeds = list(map(int, lines[0].split(" ")[1:]))
+seeds = [
+    (raw_seeds[i], raw_seeds[i+1])
+    for i in range(0, len(raw_seeds), 2)
+]
 
-    min_location = float('inf')
-    obs = {}
-    for x in map(int, seeds):
-        obs[x] = []
-        for seg in segments[1:]:
-            for conversion in re.findall(r'(\d+) (\d+) (\d+)', seg):
-                destination, start, delta = map(int, conversion)
-                if x in range(start, start + delta):
-                    x += destination - start
-                    obs[x]
-                    break
-        
-        min_location = min(x, min_location)
+# Generate all the mappings
+maps = []
 
-    return min_location
+i = 2
+while i < len(lines):
+    catA, _, catB = lines[i].split(" ")[0].split("-")
+    maps.append([])
 
+    i += 1
+    while i < len(lines) and not lines[i] == "":
+        dstStart, srcStart, rangeLen = map(int, lines[i].split())
+        maps[-1].append((dstStart, srcStart, rangeLen))
+        i += 1
 
-# def part2():
-#     segments = fileData.getLines('day5') if prod else fileData.getLines('day5/test') #puzzle_input.split('\n\n')
-#     intervals = []
+    maps[-1].sort(key=lambda x: x[1])
 
-#     for seed in re.findall(r'(\d+) (\d+)', segments[0]):
-#         x1, dx = map(int, seed)
-#         x2 = x1 + dx
-#         intervals.append((x1, x2, 1))
-
-#     min_location = float('inf')
-#     while intervals:
-#         x1, x2, level = intervals.pop()
-#         if level == 8:
-#             min_location = min(x1, min_location)
-#             continue
-
-#         for conversion in re.findall(r'(\d+) (\d+) (\d+)', segments[level]):
-#             z, y1, dy = map(int, conversion)
-#             y2 = y1 + dy
-#             diff = z - y1
-#             if x2 <= y1 or y2 <= x1:    # no overlap
-#                 continue
-#             if x1 < y1:                 # split original interval at y1
-#                 intervals.append((x1, y1, level))
-#                 x1 = y1
-#             if y2 < x2:                 # split original interval at y2
-#                 intervals.append((y2, x2, level))
-#                 x2 = y2
-#             intervals.append((x1 + diff, x2 + diff, level + 1)) # perfect overlap -> make conversion and let pass to next nevel 
-#             break
-
-#         else:
-#             intervals.append((x1, x2, level + 1))
-  
-#     return min_location
+    i += 1
 
 
-print('Part 1:', part1())
-# print('Part 2:', part2())
+# Ensure that all mappings are disjoint
+for m in maps:
+    for i in range(len(m)-1):
+        if not m[i][1] + m[i][2] <= m[i+1][1]:
+            print(m[i], m[i+1])
+
+
+def remap(lo, hi, m) -> tuple: 
+    # Remap an interval (lo,hi) to a set of intervals m
+    ans = []
+    for dst, src, R in m:
+        end = src + R - 1
+        D = dst - src  # How much is this range shifted
+
+        # my notes - range intersection checked here
+        if not (end < lo or src > hi):
+            ans.append((max(src, lo), min(end, hi), D))
+
+    for i, interval in enumerate(ans):
+        l, r, D = interval
+        yield (l + D, r + D)
+
+        if i < len(ans) - 1 and ans[i+1][0] > r + 1:
+            yield (r + 1, ans[i+1][0] - 1)
+
+    # End and start ranges can use some love
+    if len(ans) == 0:
+        yield (lo, hi)
+        return
+
+    if ans[0][0] != lo:
+        yield (lo, ans[0][0] - 1)
+    if ans[-1][1] != hi:
+        yield (ans[-1][1] + 1, hi)
+
+
+locs = []
+
+ans = 1 << 60
+
+starttime = time.time()
+for start, R in seeds:
+    cur_intervals = [(start, start + R - 1)]
+    new_intervals = []
+
+    for m in maps:
+        for lo, hi in cur_intervals:
+            for new_interval in remap(lo, hi, m):
+                new_intervals.append(new_interval)
+
+        cur_intervals, new_intervals = new_intervals, []
+
+    for lo, hi in cur_intervals:
+        ans = min(ans, lo)
+
+
+print('{:.6f}s'.format(time.time() - starttime),ans)
+    
+    
