@@ -1,3 +1,4 @@
+import time
 from functools import reduce
 
 # time-line
@@ -6,7 +7,7 @@ class Solution:
         timeline  = list(range(1, totalTime+1))
         cnt = 0
         beatTuples=[]
-        for i,tm in enumerate(timeline):
+        for tm in timeline:
             dist = tm * (timeline[-1] - tm)
             if dist > target:
                 cnt+=1
@@ -22,13 +23,14 @@ class Solution:
 
         out = []
         tps = []
-        for time, dist in timedist:
-            res = self.calcMaxSets(time, dist)
+        startt = time.time()
+        for tm, dist in timedist:
+            res = self.calcMaxSets(tm, dist)
             out.append(res[0])
             # tps.append(res[1])
 
 
-        return reduce(lambda x,y: x*y, out) #, tps
+        return reduce(lambda x,y: x*y, out), '{:.6f}s'.format(time.time() - startt) #, tps
     
 
 test ='''Time:      7  15   30
