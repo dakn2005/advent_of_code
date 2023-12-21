@@ -6,8 +6,10 @@ import time
 sys.path.append('2023/')
 import fileData
 
-
+# TODO: Revisit, compare with borrowed output
 PROD = True
+
+cardsLabels: list = list(reversed(['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2', 'J']))
 
 def sortCards(hands: list)->list:
 
@@ -30,8 +32,7 @@ def sortCards(hands: list)->list:
     #         return 0
 
     def compare_func(item1, item2):
-        cardsLabels: list = list(reversed(['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']))
-
+        
         for i in range(len(item1)):
             if  cardsLabels.index(item1[i]) <  cardsLabels.index(item2[i]):
                 return 1
@@ -55,9 +56,23 @@ def winnings(arrString):
     # hands = [{halnum:{ 'score': hscore, 'cnter': Counter(halnum)}} for (halnum,hscore) in map(lambda s: s.split(),lines)]
     hands = {}
     for (halnum,hscore) in map(lambda s: s.split(),lines):
+        # part II - modify for J's - replace most numerous letter with wildcard
+        halnum2 = halnum
+        if 'J' in halnum:
+            common = Counter(halnum).most_common()[0]
+            if common[1] > 2:
+                halnum2 = str(halnum).replace('J', common[0])
+            else:
+                jReplace = halnum[0]
+                for c in halnum:
+                    if cardsLabels.index(c) > cardsLabels.index(jReplace):
+                        jReplace = c
+
+                halnum2 = str(halnum).replace('J', jReplace)
+
         hands[halnum] = {
             'score': hscore, 
-            'cnter': Counter(halnum)
+            'cnter': Counter(halnum2)
         }
 
     hTypes = [
@@ -104,8 +119,10 @@ def winnings(arrString):
                 olist.append(arr)
 
     olist.reverse()
-
+    fileData.writeLines('day7/out',[f'{n}\n' for n in olist], 'sol')
+    
     totalWinning = 0
+
     for i,h in enumerate(olist):
         c = i+1
         winning = int(hands[h]['score']) * c
@@ -114,15 +131,19 @@ def winnings(arrString):
     return totalWinning
         
     
-
-
-test = """32T3K 765
+test="""32T3K 765
 T55J5 684
 KK677 28
 KTJJT 220
-QQQJA 483
+QQQJA 483"""
+
+test2 = """J2A34 765
+J37QA 684
+23685 28
+2457T 220
+38A27 483
 """
 
-print(winnings(test))
+print(winnings(test2))
 
 
