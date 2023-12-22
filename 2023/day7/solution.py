@@ -62,7 +62,7 @@ def winnings(arrString):
             common = Counter(halnum).most_common()[0]
             if common[1] > 2:
                 halnum2 = str(halnum).replace('J', common[0])
-            else:
+            elif common[1] == 2:
                 jReplace = halnum[0]
                 for c in halnum:
                     if cardsLabels.index(c) > cardsLabels.index(jReplace):

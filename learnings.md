@@ -9,3 +9,5 @@ https://www.reddit.com/r/adventofcode/comments/189q9wv/2023_day_3_another_sample
 https://www.reddit.com/r/adventofcode/comments/189q9wv/comment/kbt0vh8/?context=3
 
 - Day 5 - change your thinking
+  
+- Day 7 - check on part 2
