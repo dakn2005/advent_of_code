@@ -64,6 +64,7 @@ def traversal_II(directions: list, arr: dict, prod = None):
 # Part II solution take the lcm
 # TODO: read on LCM and GCD and concept of generalization
 # *using LCM since the solution is not trivially generalized
+# https://www.youtube.com/watch?v=xH9LFkYRTD0
 import math
 def traversal_II_LCM(directions: list, arr: dict, prod = None):
     if prod: directions, arr = massageData()
