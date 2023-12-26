@@ -11,3 +11,8 @@ https://www.reddit.com/r/adventofcode/comments/189q9wv/comment/kbt0vh8/?context=
 - Day 5 - change your thinking
   
 - Day 7 - check on part 2
+
+- Day 8
+https://www.programiz.com/python-programming/examples/lcm
+https://cemc.uwaterloo.ca/events/mathcircles/2010-11/Winter/Intermediate_Mar2.pdf
+https://en.wikipedia.org/wiki/Weak_solution#:~:text=In%20mathematics%2C%20a%20weak%20solution,in%20some%20precisely%20defined%20sense.
