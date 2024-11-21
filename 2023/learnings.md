@@ -16,3 +16,12 @@ https://www.reddit.com/r/adventofcode/comments/189q9wv/comment/kbt0vh8/?context=
 https://www.programiz.com/python-programming/examples/lcm
 https://cemc.uwaterloo.ca/events/mathcircles/2010-11/Winter/Intermediate_Mar2.pdf
 https://en.wikipedia.org/wiki/Weak_solution#:~:text=In%20mathematics%2C%20a%20weak%20solution,in%20some%20precisely%20defined%20sense.
+
+- Day 10 - part 2
+Concept -> ray-casting - https://www.youtube.com/watch?v=zhmzPQwgPg0
+
+- Day 11 - part 2
+Part 1 solution using bfs -> quite slow
+Check on provided solution
+
+

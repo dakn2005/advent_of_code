@@ -2,6 +2,7 @@ import sys
 sys.path.append('2023/')
 import fileData
 
+
 class NaiveSolution:
     matrixDirections ={'|','-','J','L','7','F'}
 
@@ -87,7 +88,7 @@ class NaiveSolution:
                 
 
 
-    def farthestPt(self, txt, prod=None):
+    def farthestPt(self, txt, prod = None):
         if prod:
             lines = fileData.getLines('day10')
         else:
@@ -132,6 +133,6 @@ LJ...
 """
 
 t = NaiveSolution()
-# print(t.farthestPt(test1))
-# print(t.farthestPt(test2))
+print(t.farthestPt(test1))
+print(t.farthestPt(test2))
 # print(t.farthestPt(None, True))

@@ -161,4 +161,4 @@ test1="""...........
 t = NaiveSolution()
 # print(t.farthestPt(test1))
 # print(t.farthestPt(test2))
-# print(t.farthestPt(None, True))
+print(t.farthestPt(None, True))
