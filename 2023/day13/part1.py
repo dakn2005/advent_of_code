@@ -102,9 +102,3 @@ for r,isrow in out:
     total += r * (100 if isrow else 1)
 
 print(total)
-
-
-
-
-
-
