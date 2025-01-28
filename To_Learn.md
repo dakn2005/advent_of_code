@@ -1,0 +1,3 @@
+- Bitwise operations - implemented for their efficiencies
+  - e.g. 2023 > day12 part1 -> 1 << len(idxs) translates to 2 ** len(idx)
+  - AND, OR, XOR, left shift, right shift 
