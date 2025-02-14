@@ -1,5 +1,6 @@
 # Adopted from: https://github.com/womogenes/AoC-2023-Solutions/blob/main/day_12/day_12_p2.py
 # Explainer: https://www.youtube.com/watch?v=veJvlIMjv94
+# TODO: study the DP solution :'-[]
 
 from tqdm import tqdm
 from pprint import pprint

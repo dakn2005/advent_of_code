@@ -4,6 +4,8 @@ sys.path.append("2023/")
 import fileData
 
 # lines = fileData.getLines('day13')
+# source: https://www.youtube.com/watch?v=Jzp8INWz5Z0
+# TODO: study the solution
 
 with open('/Users/daudi/Documents/Daudi/Projects/python/python3env/advent_of_code/2023/day13/input.txt') as fin:
     patterns = fin.read().strip().split("\n\n")
